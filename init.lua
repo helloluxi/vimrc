@@ -106,9 +106,6 @@ require("lazy").setup({
   -- Git gutter (inline diff markers + hunk preview)
   { "lewis6991/gitsigns.nvim", config = true },
 
-  -- Comment toggle  (gcc = line, gc+motion, gc in visual)
-  { "numToStr/Comment.nvim", config = true },
-
   -- Auto-close brackets/quotes; integrates with cmp confirm
   {
     "windwp/nvim-autopairs",
