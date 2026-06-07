@@ -149,6 +149,15 @@ require("lazy").setup({
   -- LaTeX
   { "lervag/vimtex" },
 
+  -- LuTeX — live LaTeX/Markdown/Slides browser preview + HTTP file-jump listener (~/lutex)
+  -- enabled-guard: silently skipped on machines that don't have ~/lutex checked out
+  {
+    dir     = "~/lutex",
+    enabled = function() return vim.fn.isdirectory(vim.fn.expand("~/lutex")) == 1 end,
+    build   = "pnpm install && pnpm run compile",
+    config  = function() require("lutex").setup() end,
+  },
+
   -- Jupyter
   { "benlubas/molten-nvim", build = ":UpdateRemotePlugins" },
 
@@ -182,7 +191,13 @@ require("lazy").setup({
           lualine_a = { "mode" },
           lualine_b = { "branch", "diff", "diagnostics" },
           lualine_c = { { "filename", path = 1 } },
-          lualine_x = { "filetype" },
+          lualine_x = {
+            function()
+              local ok, lutex = pcall(require, "lutex")
+              return (ok and lutex.status()) or ""
+            end,
+            "filetype",
+          },
           lualine_y = { "progress" },
           lualine_z = { "location" },
         },
@@ -328,6 +343,19 @@ end
 -- Mouse: right-click enters insert mode
 -- ---------------------------------------------------------------------------
 vim.keymap.set("n", "<RightMouse>", "i")
+
+-- ---------------------------------------------------------------------------
+-- LuTeX keybind glue — call a require('lutex') method only when the optional
+-- ~/lutex plugin is present; warn instead of throwing when it is absent.
+-- ---------------------------------------------------------------------------
+function _G.lutex_call(method, ...)
+  local ok, lutex = pcall(require, "lutex")
+  if not ok then
+    vim.notify("[lutex] not installed (~/lutex absent)", vim.log.levels.WARN)
+    return
+  end
+  lutex[method](...)
+end
 
 -- ---------------------------------------------------------------------------
 -- Keybinds (generated from keybinds.conf by nvim/run.sh)
