@@ -106,6 +106,9 @@ require("lazy").setup({
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
+      require("nvim-treesitter.configs").setup({
+        ensure_installed = { "latex" },
+      })
       vim.api.nvim_create_autocmd("FileType", {
         callback = function(ev) pcall(vim.treesitter.start, ev.buf) end,
       })
