@@ -50,6 +50,15 @@ vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
   end,
 })
 
+-- Wrap prose filetypes only
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "tex", "gitcommit", "text", "rst" },
+  callback = function()
+    vim.opt_local.wrap      = true
+    vim.opt_local.linebreak = true
+  end,
+})
+
 -- Auto-reload on focus gained or buffer switch
 vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold" }, { command = "silent! checktime" })
 
