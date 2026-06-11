@@ -100,15 +100,14 @@ require("lazy").setup({
   { "hrsh7th/cmp-buffer" },
   { "hrsh7th/cmp-path" },
 
-  -- Parser installation; nvim 0.10+ handles highlighting natively.
-  -- Run :TSInstall <lang> once per language (e.g. :TSInstall c_sharp lua python bash).
+  -- Parser management; Neovim handles highlighting natively.
+  -- Run :TSInstall <lang> once per language (e.g. :TSInstall latex lua python bash).
   {
     "nvim-treesitter/nvim-treesitter",
+    lazy = false,
     build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = { "latex" },
-      })
+      require("nvim-treesitter").setup()
       vim.api.nvim_create_autocmd("FileType", {
         callback = function(ev) pcall(vim.treesitter.start, ev.buf) end,
       })
