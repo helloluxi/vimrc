@@ -74,6 +74,12 @@ opt.ttimeout       = false
 opt.termguicolors  = true
 opt.showmode       = false   -- mode shown in statusline instead
 
+-- Treesitter-based folding (language-aware fold structure for F-prefix fold keys)
+opt.foldmethod     = "expr"
+opt.foldexpr       = "v:lua.vim.treesitter.foldexpr()"
+opt.foldlevel      = 99   -- start fully unfolded
+opt.foldlevelstart = 99
+
 -- ---------------------------------------------------------------------------
 -- Plugins (lazy.nvim)
 -- ---------------------------------------------------------------------------
