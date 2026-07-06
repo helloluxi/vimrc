@@ -59,6 +59,12 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- Justfile detection (run :TSInstall just once for highlighting)
+vim.filetype.add({
+  filename = { ["justfile"] = "just", ["Justfile"] = "just" },
+  pattern  = { [".*%.just"] = "just" },
+})
+
 -- Auto-reload on focus gained or buffer switch
 vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold" }, { command = "silent! checktime" })
 
@@ -239,6 +245,7 @@ require("mason-lspconfig").setup({
   ensure_installed = {
     "clangd",    -- C / C++ / CUDA
     "pyright",   -- Python
+    "ruff",      -- Python lint / import-sort / format
     "ts_ls",     -- JavaScript / TypeScript
     "omnisharp", -- C#
     "html",      -- HTML
@@ -249,7 +256,7 @@ require("mason-lspconfig").setup({
 })
 
 vim.lsp.config('*', { capabilities = require("cmp_nvim_lsp").default_capabilities() })
-vim.lsp.enable({ "clangd", "pyright", "ts_ls", "omnisharp", "html", "cssls", "texlab" })
+vim.lsp.enable({ "clangd", "pyright", "ruff", "ts_ls", "omnisharp", "html", "cssls", "texlab" })
 
 -- Inlay hints (servers that support them — omnisharp, clangd, ts_ls, etc.)
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -257,6 +264,24 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if client and client.server_capabilities.inlayHintProvider then
       vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
+    end
+  end,
+})
+
+-- Highlight all references of the symbol under the cursor (servers that support it)
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client and client.server_capabilities.documentHighlightProvider then
+      local group = vim.api.nvim_create_augroup("lsp-document-highlight-" .. args.buf, { clear = true })
+      vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+        buffer = args.buf, group = group,
+        callback = vim.lsp.buf.document_highlight,
+      })
+      vim.api.nvim_create_autocmd("CursorMoved", {
+        buffer = args.buf, group = group,
+        callback = vim.lsp.buf.clear_references,
+      })
     end
   end,
 })
