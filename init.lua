@@ -24,8 +24,8 @@ opt.expandtab      = true
 opt.smartindent    = true
 
 opt.wrap           = false
-opt.scrolloff      = 8
-opt.sidescrolloff  = 8
+opt.scrolloff      = 0
+opt.sidescrolloff  = 0
 
 opt.ignorecase     = true
 opt.smartcase      = true
