@@ -8,6 +8,18 @@
 vim.g.loaded_netrw       = 1
 vim.g.loaded_netrwPlugin = 1
 
+-- vim.deprecate()'s health-report backend fails to load on this Neovim build
+-- (require('vim.deprecated.health') errors even though the file exists), which
+-- turns any plugin's use of a deprecated API (e.g. toggleterm's old-style
+-- vim.validate() call) into a hard crash instead of a warning. Swallow that.
+do
+  local orig_deprecate = vim.deprecate
+  vim.deprecate = function(...)
+    local ok = pcall(orig_deprecate, ...)
+    if not ok then return end
+  end
+end
+
 -- ---------------------------------------------------------------------------
 -- Options
 -- ---------------------------------------------------------------------------
