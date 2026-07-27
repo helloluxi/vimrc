@@ -125,15 +125,61 @@ require("lazy").setup({
   { "hrsh7th/cmp-path" },
 
   -- Parser management; Neovim handles highlighting natively.
-  -- Run :TSInstall <lang> once per language (e.g. :TSInstall latex lua python bash).
   {
     "nvim-treesitter/nvim-treesitter",
     lazy = false,
     build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter").setup()
+      local treesitter = require("nvim-treesitter")
+      local required_parsers = { "python", "cpp", "cuda" }
+      local required_parser = {}
+      for _, parser in ipairs(required_parsers) do
+        required_parser[parser] = true
+      end
+
+      treesitter.setup()
+
+      local function buffer_language(buf)
+        if not vim.api.nvim_buf_is_valid(buf) or not vim.api.nvim_buf_is_loaded(buf) then
+          return nil
+        end
+        local filetype = vim.bo[buf].filetype
+        return vim.treesitter.language.get_lang(filetype) or filetype
+      end
+
+      local function start_highlighting(buf, notify_on_error)
+        local language = buffer_language(buf)
+        if not language then return end
+
+        local ok, err = pcall(vim.treesitter.start, buf)
+        if not ok and notify_on_error and required_parser[language] then
+          vim.notify_once(
+            ("Tree-sitter highlighting unavailable for %s: %s"):format(language, err),
+            vim.log.levels.WARN
+          )
+        end
+      end
+
+      -- Installation is asynchronous. A command-line buffer can reach FileType
+      -- first, so retry required-language buffers after installation finishes.
+      local install_finished = false
+      local install_task = treesitter.install(required_parsers)
+      install_task:await(function()
+        install_finished = true
+        vim.schedule(function()
+          for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+            if required_parser[buffer_language(buf)] then
+              start_highlighting(buf, true)
+            end
+          end
+        end)
+      end)
+
       vim.api.nvim_create_autocmd("FileType", {
-        callback = function(ev) pcall(vim.treesitter.start, ev.buf) end,
+        group = vim.api.nvim_create_augroup("treesitter-highlighting", { clear = true }),
+        callback = function(ev)
+          start_highlighting(ev.buf, install_finished)
+        end,
       })
     end,
   },
