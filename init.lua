@@ -298,6 +298,9 @@ require("lazy").setup({
 -- ---------------------------------------------------------------------------
 -- LSP
 -- ---------------------------------------------------------------------------
+-- Keep diagnostics visible without underlining the source text.
+vim.diagnostic.config({ underline = false })
+
 require("mason").setup()
 require("mason-lspconfig").setup({
   ensure_installed = {
