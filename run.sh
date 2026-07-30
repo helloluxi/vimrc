@@ -9,8 +9,6 @@ OUT="$HOME/.config/nvim/lua/keybinds.lua"
 die() { echo "ERROR: $*" >&2; exit 1; }
 log() { echo ":: $*" >&2; }
 
-ln -sf "$SCRIPT_DIR/misc/tmux.conf"  "$HOME/.tmux.conf"
-ln -sf "$SCRIPT_DIR/misc/ripgreprc"  "$HOME/.ripgreprc"
 normalize_ctrl_notation() {
   # Allow ^x syntax in keybinds.conf and normalize to Neovim's <C-x>.
   sed -E 's/\^([[:alnum:]])/<C-\1>/g' <<< "$1"
