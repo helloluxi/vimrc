@@ -128,6 +128,9 @@ require("lazy").setup({
   {
     "nvim-treesitter/nvim-treesitter",
     lazy = false,
+    -- Parser installation requires the tree-sitter CLI. Keep Neovim usable on
+    -- machines where it is not installed rather than failing during startup.
+    enabled = function() return vim.fn.executable("tree-sitter") == 1 end,
     build = ":TSUpdate",
     config = function()
       local treesitter = require("nvim-treesitter")
