@@ -230,8 +230,23 @@ require("lazy").setup({
   -- Fuzzy find
   { "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
 
-  -- LaTeX
-  { "lervag/vimtex" },
+  -- LaTeX — use Skim with PDF sync on macOS when available; otherwise keep
+  -- VimTeX's generic viewer without warning (e.g. on Linux).
+  {
+    "lervag/vimtex",
+    init = function()
+      local skim_installed = vim.fn.has("macunix") == 1
+        and (
+          vim.fn.isdirectory("/Applications/Skim.app") == 1
+          or vim.fn.isdirectory(vim.fn.expand("~/Applications/Skim.app")) == 1
+        )
+
+      if skim_installed then
+        vim.g.vimtex_view_method = "skim"
+        vim.g.vimtex_view_skim_sync = 1
+      end
+    end,
+  },
 
   -- LuTeX — live LaTeX/Markdown/Slides browser preview + HTTP file-jump listener (~/lutex)
   -- enabled-guard: silently skipped on machines that don't have ~/lutex checked out
