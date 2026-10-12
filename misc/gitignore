@@ -1,0 +1,10 @@
+**/.claude/settings.local.json
+.lu/
+.claude/
+tmp/
+.DS_Store
+AGENTS.md
+CLAUDE.md
+.codex/
+.claude/
+.playwright-cli/

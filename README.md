@@ -1,6 +1,6 @@
 # vimrc
 
-Custom Neovim config with a blank-slate, prefix-free keybind system, plus a generated `.vimrc` fallback for plain-vim boxes.
+Shared configs for every machine: Neovim with a blank-slate, prefix-free keybind system, a generated `.vimrc` fallback for plain-vim boxes, tmux, ripgrep, global Git ignore rules, and AeroSpace on macOS.
 
 ## One-line setup on a fresh machine
 
@@ -8,7 +8,11 @@ Custom Neovim config with a blank-slate, prefix-free keybind system, plus a gene
 curl -fsSL https://raw.githubusercontent.com/helloluxi/vimrc/main/bootstrap.sh | bash
 ```
 
-`bootstrap.sh` clones this repo to `~/vimrc` (or pulls if it's already there), then runs `run.sh`. Both `~/.config/nvim/` and `~/.vimrc` are installed regardless of whether `nvim`/`vim` are currently on PATH — the vim fallback is in place the moment vim is.
+`bootstrap.sh` clones this repo to `~/vimrc` (or pulls if it's already there), then runs `run.sh`. Both `~/.config/nvim/` and `~/.vimrc` are installed regardless of whether `nvim`/`vim` are currently on PATH — the vim fallback is in place the moment vim is. It also installs the shared tmux, ripgrep, and Git configs, plus AeroSpace on macOS.
+
+For the shared `~/v` checkout, run `bash ~/v/run.sh`. To install only the miscellaneous configs, run `bash ~/v/misc/run.sh`. The latter refuses to replace existing non-symlink files.
+
+The shared configs link to `~/.tmux.conf`, `~/.ripgreprc`, and `~/.config/git/ignore`, plus `~/.config/aerospace/aerospace.toml` on macOS. The Git path honors `XDG_CONFIG_HOME` when set. Set `export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"` in each machine's shell config so ripgrep loads its defaults. Git reads its global ignore file by default unless `core.excludesFile` selects a different location.
 
 ## Files
 
@@ -20,6 +24,11 @@ curl -fsSL https://raw.githubusercontent.com/helloluxi/vimrc/main/bootstrap.sh |
 | `vocab-nvim.conf` | Neovim vocab: `abstract-name = nvim-rhs`. |
 | `vocab-vim.conf` | Plain-vim vocab: strict subset of `vocab-nvim.conf`. Entries it omits are skipped during vimrc generation (LSP, Telescope, plugin commands). |
 | `run.sh` | Generator. Validates `keybinds.conf` (duplicates, prefix-free), then emits **both** `~/.config/nvim/lua/keybinds.lua` and `~/.vimrc` from the same `keybinds.conf`. Symlinks `init.lua`. |
+| `misc/tmux.conf` | Shared tmux colors, clipboard, navigation, and keybindings. |
+| `misc/ripgreprc` | Shared ripgrep defaults and directory exclusions. |
+| `misc/gitignore` | Global Git ignore rules. |
+| `misc/aerospace.toml` | Shared macOS window-manager preferences; installed only on macOS. |
+| `misc/run.sh` | Links the miscellaneous configs; also called by `run.sh`. |
 
 `init.lua` is symlinked into `~/.config/nvim/` by `run.sh`. Never edit the generated `keybinds.lua` or `~/.vimrc` directly.
 

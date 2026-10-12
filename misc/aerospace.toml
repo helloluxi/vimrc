@@ -1,0 +1,43 @@
+# https://nikitabobko.github.io/AeroSpace/guide#config-version
+config-version = 2
+
+start-at-login = true
+on-focus-changed = ['move-mouse window-lazy-center']
+
+# after-startup-command = [
+#   'exec-and-forget borders active_color=0xff007aff inactive_color=0xff494d64 width=10'
+# ]
+
+[gaps]
+inner.horizontal = 4
+inner.vertical   = 2
+outer.left = 0
+outer.right = 0
+outer.bottom = 0
+outer.top = 0
+
+[mode.main.binding]
+ctrl-cmd-j = 'focus --boundaries all-monitors-outer-frame left'
+ctrl-cmd-k = 'focus --boundaries all-monitors-outer-frame down'
+ctrl-cmd-i = 'focus --boundaries all-monitors-outer-frame up'
+ctrl-cmd-l = 'focus --boundaries all-monitors-outer-frame right'
+ctrl-cmd-shift-j = 'move --boundaries all-monitors-outer-frame left'
+ctrl-cmd-shift-k = 'move --boundaries all-monitors-outer-frame down'
+ctrl-cmd-shift-i = 'move --boundaries all-monitors-outer-frame up'
+ctrl-cmd-shift-l = 'move --boundaries all-monitors-outer-frame right'
+ctrl-cmd-left = 'focus --boundaries all-monitors-outer-frame left'
+ctrl-cmd-down = 'focus --boundaries all-monitors-outer-frame down'
+ctrl-cmd-up = 'focus --boundaries all-monitors-outer-frame up'
+ctrl-cmd-right = 'focus --boundaries all-monitors-outer-frame right'
+ctrl-cmd-shift-left = 'move --boundaries all-monitors-outer-frame left'
+ctrl-cmd-shift-down = 'move --boundaries all-monitors-outer-frame down'
+ctrl-cmd-shift-up = 'move --boundaries all-monitors-outer-frame up'
+ctrl-cmd-shift-right = 'move --boundaries all-monitors-outer-frame right'
+ctrl-cmd-u = 'layout floating tiling'
+ctrl-cmd-y = 'layout h_accordion tiles'
+ctrl-cmd-o = 'mode resize'
+
+[mode.resize.binding]
+minus = 'resize smart -50'
+equal = 'resize smart +50'
+esc = 'mode main'
