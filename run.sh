@@ -542,5 +542,3 @@ VIMRC_HEAD
 } > "$VIMRC_OUT"
 
 log "Generated $VIMRC_OUT"
-
-bash "$SCRIPT_DIR/misc/run.sh"
